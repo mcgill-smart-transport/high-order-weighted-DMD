@@ -35,24 +35,24 @@ def stagger_data(data, h):
 
 
 # %%
-def get_flow1(od, s, dir='o'):
+def get_flow1(od, s, dir='o', num_s=159):
     """Get the flow of station `s`"""
     n = od.shape[0]
     if dir == 'o':
-        idx = np.arange(s, n, 159)
+        idx = np.arange(s, n, num_s)
     elif dir == 'd':
-        idx = np.arange((s * 159), (s * 159 + 159))
+        idx = np.arange((s * num_s), (s * num_s + num_s))
     return np.sum(od[idx, :], axis=0)
 
 
-def od2flow(od, s_list=None, dir='o'):
+def od2flow(od, s_list=None, dir='o', num_s=159):
     if s_list is None:
-        s_list = range(159)
+        s_list = range(num_s)
 
     n_s = len(s_list)
     flow = np.zeros((n_s, od.shape[1]), dtype=np.float32)
     for i, s in enumerate(s_list):
-        flow[i, :] = get_flow1(od, s, dir)
+        flow[i, :] = get_flow1(od, s, dir, num_s)
     return flow
 
 
@@ -80,6 +80,20 @@ def MAE(real, predict):
 
 def MSE(f0, f1, axis=None):
     return np.mean((f0 - f1) ** 2, axis)
+
+
+def get_score(real, predict, real_flow, predict_flow):
+    print('RMSE of OD: {}'.format(RMSE(real, predict)))
+    print('WMAPE of OD: {}'.format(WMAPE(real, predict)))
+    print('SMAPE of OD: {}'.format(SMAPE(real, predict)))
+    print('MAE of OD: {}'.format(MAE(real, predict)))
+    print('r2 of OD: {}'.format(r2_score(real.ravel(), predict.ravel())))
+    print('\n')
+    print('RMSE of flow: {}'.format(RMSE(real_flow, predict_flow)))
+    print('WMAPE of flow: {}'.format(WMAPE(real_flow, predict_flow)))
+    print('SMAPE of flow: {}'.format(SMAPE(real_flow, predict_flow)))
+    print('MAE of flow: {}'.format(MAE(real_flow, predict_flow)))
+    print('r2 of flow: {}'.format(r2_score(real_flow.ravel(), predict_flow.ravel())))
 
 
 def remove_weekends(data, start=0, bs=36):

@@ -22,6 +22,7 @@ m_validate = validate_idx.shape[0]
 
 h = [36, 33, 28, 19,8, 3, 30, 35, 4, 14]
 bs = 36
+rho = 1
 h.sort()
 h = np.array(h)
 
@@ -31,7 +32,7 @@ ns = 4  # The number of steps to forecast
 results = {i:np.zeros((data.shape[0], validate_idx.shape[0]+test_idx.shape[0])) for i in range(1, ns+1)}
 buffer_OD = np.zeros((data.shape[0], max(2, ns-1)))  # To store previously/current forecast OD
 buffer_flow = np.zeros((159, 2+ns-1))  # To store real/forecast flow
-model1 = TimeVaryingDMD_standard_eX(h, 100, 50, 0.92, bs=bs)
+model1 = HWDMD(h, 100, 50, rho=rho, bs=bs)
 model1.fit(train_data, flow[:, max(h) - 1:m_train - 1])
 
 # Initialize buffer OD
@@ -78,4 +79,4 @@ print(RMSE(data[:, test_idx], results[3][:, 360-2:-2]))
 print(RMSE(data[:, test_idx], results[4][:, 360-3:-3]))
 
 for key, value in results.items():
-    np.savez_compressed('..//data//OD_HWDMD_step{}.npz'.format(key), data=value[:, 360-(key-1):720-(key-1)])
+    np.savez_compressed('..//data//OD_HWDMD_noweight_step{}.npz'.format(key), data=value[:, 360-(key-1):720-(key-1)])
