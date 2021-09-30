@@ -11,6 +11,37 @@ from numpy import diag
 from numpy.linalg import pinv, norm, eig, eigh
 from sklearn.metrics import r2_score
 
+figsize = (3, 3)
+fontsize = 9
+axislinewidth = 0.5
+markersize = 5
+text = None
+limits = [-7, 7]
+offset = [-44, 12]
+projection = None
+fontfamily = ["Helvetica", "Arial"]
+contain_latex = False
+
+matplotlib.rc("font", **{"family": "sans-serif", "sans-serif": fontfamily, "size": fontsize})
+matplotlib.rc('pdf', fonttype=42, use14corefonts=True, compression=6)
+matplotlib.rc('ps', useafm=True, usedistiller='none', fonttype=42)
+matplotlib.rc("axes", unicode_minus=False, linewidth=axislinewidth, labelsize='medium')
+matplotlib.rc("axes.formatter", limits=limits)
+matplotlib.rc('savefig', bbox='tight', format='eps', pad_inches=0.05)
+matplotlib.rc('lines', marker=None, markersize=markersize)
+matplotlib.rc('text', usetex=False)
+matplotlib.rc('xtick', direction='in')
+matplotlib.rc('xtick.major', width=axislinewidth)
+matplotlib.rc('ytick', direction='in')
+matplotlib.rc('lines', linewidth=1)
+matplotlib.rc('ytick.major', width=axislinewidth)
+matplotlib.rcParams['lines.solid_capstyle'] = 'round'
+matplotlib.rcParams['lines.solid_joinstyle'] = 'round'
+matplotlib.rc('mathtext', fontset='cm')  # stixsans, STIX,
+matplotlib.rc('legend', fontsize='medium', frameon=False,
+              handleheight=0.5, handlelength=1, handletextpad=0.4, numpoints=1)
+
+
 
 def stagger_data(data, h):
     """
@@ -93,7 +124,7 @@ def get_score(real, predict, real_flow, predict_flow):
     print('WMAPE of flow: {}'.format(WMAPE(real_flow, predict_flow)))
     print('SMAPE of flow: {}'.format(SMAPE(real_flow, predict_flow)))
     print('MAE of flow: {}'.format(MAE(real_flow, predict_flow)))
-    print('r2 of flow: {}'.format(r2_score(real_flow.ravel(), predict_flow.ravel())))
+    print('r2 of flow: {}\n'.format(r2_score(real_flow.ravel(), predict_flow.ravel())))
 
 
 def remove_weekends(data, start=0, bs=36):
